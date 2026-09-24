@@ -68,24 +68,19 @@ def convert():
         "kelvin": round(kelvin, 2)
     })
 
-@app.route("/speed")
-def speed():
-  distance = request.args.get("distance", type=float)
-  time = request.args.get("time", type=float)
-  if distance is None or time is None or distance < 0 or time <= 0:
-    return (
-        jsonify({
-            "ok": False,
-            "error": "Укажите неотрицательное расстояние distance и время time > 0",
-        }),
-        400,
-    )
-  return jsonify({
-      "ok": True,
-      "distance": distance,
-      "time": time,
-      "speed": round(distance / time, 2),
-  })
+@app.route("/storage")
+def storage():
+    used = request.args.get("used", type=float)
+    total = request.args.get("total", type=float)
+    if used is None or total is None or total <= 0 or used < 0 or used > total:
+        return jsonify({"ok": False, "error": "Укажите total > 0 и 0 <= used <= total"}), 400
+    return jsonify({
+        "ok": True,
+        "used": used,
+        "total": total,
+        "free": round(total - used, 2),
+        "used_percent": round((used / total) * 100, 2)
+    })
 
 @app.route("/tags")
 def tags():
